@@ -1,4 +1,10 @@
-<?php include "connection.php";
+<?php
+
+// BaseURL
+$BASEURL = "http://localhost/sipat";
+
+include "function.php";
+
 
 function query($query)
 {
@@ -21,16 +27,29 @@ if (isset($_POST['register'])) {
     $active = 1;
 
     // cek konfirmasi password
+    $konfirmasi_password = "";
     if ($password != $password2) {
-        $_SESSION =
-            [
-                'konfirmasi_password' => true,
-            ];
+        $konfirmasi_password = "<li>Confirm password does not match</li>";
+        $error_pw = true;
+    }
+
+    // cek apakah email sudah pernah digunakan atau belum
+    $result = mysqli_query($conn, "SELECT email FROM users WHERE email = '$email'");
+
+    $pesan_email = "";
+    if (mysqli_fetch_assoc($result)) {
+        $pesan_email = "<li>E-mail has been registered</li>";
+        $error_email = true;
+    }
+
+    // kembalikan kesalahan error
+    if (isset($error_pw) || isset($error_email)) {
+        set_pesan_login($konfirmasi_password . " " . $pesan_email, "danger");
         header("Location: register.php");
         exit;
     }
 
-    // query insert data users
+    // query insert data ke tabel users
     $query = "INSERT INTO users
                     VALUES
                     ('', '$email', '$username', '$nama_lengkap', '$password', '$active')
@@ -44,20 +63,19 @@ if (isset($_POST['register'])) {
     $groups_id = 2;
     $users_id = query("SELECT * FROM users ORDER BY id DESC LIMIT 1")[0]['id'];
 
+    // query insert data ke tabel auth_groups_users
     $query = "INSERT INTO auth_groups_users
-    VALUES
-    ('$groups_id', '$users_id')
-    ";
+                    VALUES
+                    ('$groups_id', '$users_id')
+                    ";
     mysqli_query($conn, $query);
 
 
     $auth_groups_users_rows =  mysqli_affected_rows($conn);
 
     if ($users_rows > 0 && $auth_groups_users_rows > 0) {
-        $_SESSION =
-            [
-                'berhasil' => true,
-            ];
+        $berhasil = "Successfully registered!";
+        set_pesan_login($berhasil, "success");
         header("Location: login.php");
         exit;
     }
