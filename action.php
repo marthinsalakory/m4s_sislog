@@ -6,18 +6,6 @@ $BASEURL = "http://localhost/sipat";
 include "function.php";
 
 
-function query($query)
-{
-    global $conn;
-    $result = mysqli_query($conn, $query);
-    $rows = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $rows[] = $row;
-    }
-    return $rows;
-}
-
-
 if (isset($_POST['register'])) {
     $email = $_POST['email'];
     $username = $_POST['username'];
