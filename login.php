@@ -1,4 +1,12 @@
 <?php include "function.php"; ?>
+<?php
+
+if (isset($_SESSION['login'])) {
+    header("Location: beranda.php");
+    exit;
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,19 +28,19 @@
                     </div>
                     <div class="card-body">
                         <?php pesan_login(); ?>
-                        <form action="">
+                        <form action="action.php" method="POST">
                             <div class="form-group">
-                                <input type="text" name="" class="form-control" placeholder="Username / Email">
+                                <input type="text" name="username" class="form-control" placeholder="Username / Email">
                             </div>
                             <div class="form-group">
-                                <input type="text" name="" class="form-control" placeholder="Password">
+                                <input type="password" name="password" class="form-control" placeholder="Password">
                             </div>
                             <div class="form-group custom-control custom-checkbox mt-2">
                                 <input type="checkbox" class="custom-control-input" id="customControlAutosizing">
                                 <label class="custom-control-label" for="customControlAutosizing">Remember me</label>
                             </div>
                             <div class="form-group mt-2">
-                                <input type="submit" name="" value="Login" class="btn btn-primary btn-block">
+                                <input type="submit" name="login" value="Login" class="btn btn-primary btn-block">
                             </div>
                             <div class="form-group mt-2">
                                 <a href="register.php">Create your account</a>

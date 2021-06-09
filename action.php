@@ -83,3 +83,35 @@ if (isset($_POST['register'])) {
     header("Location: register.php");
     exit;
 }
+
+if (isset($_POST['login'])) {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    $resultu = mysqli_query($conn, "SELECT * FROM users WHERE username = '$username'");
+    $resulti = mysqli_query($conn, "SELECT * FROM users WHERE email = '$username'");
+    if (mysqli_num_rows($resultu) === 1) {
+        // cek password
+        $pass = query("SELECT * FROM users WHERE username = '$username'")[0];
+        if ($password == $pass['password']) {
+            $_SESSION["login"] = true;
+            $_SESSION["user"] = $pass['id'];
+            header("Location: beranda.php");
+            exit;
+        }
+    } elseif (mysqli_num_rows($resulti) === 1) {
+        // cek password
+        $pass = query("SELECT * FROM users WHERE email = '$username'")[0];
+        if ($password == $pass['password']) {
+            $_SESSION["login"] = true;
+            $_SESSION["user"] = $pass['id'];
+            header("Location: beranda.php");
+            exit;
+        }
+    }
+
+    $pesan = "<li>Your username, email or password is wrong</li>";
+    set_pesan_login($pesan, "danger");
+    header("Location: login.php");
+    exit;
+}
